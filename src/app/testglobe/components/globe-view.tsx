@@ -4,13 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Globe, { GlobeMethods } from "react-globe.gl";
 import { CountrySummary } from "../../types/country.type";
-import { countryHref } from "../../lib/country-href";
+import { countryHref, countryId } from "../../lib/country-href";
+import { GlobeWeather } from "./globe-weather";
 
 type GlobeViewProps = {
     countries: CountrySummary[];
+    // Keyed by countryId
+    weather: Record<string, GlobeWeather>;
 };
 
-function GlobeView({ countries }: GlobeViewProps) {
+// Below this camera altitude there is room to show weather under every flag
+const SHOW_WEATHER_ALTITUDE = 1.2;
+
+function GlobeView({ countries, weather }: GlobeViewProps) {
     const router = useRouter();
     const globeRef = useRef<GlobeMethods | undefined>(undefined);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -49,7 +55,20 @@ function GlobeView({ countries }: GlobeViewProps) {
         // The library positions the wrapper with an inline transform,
         // so hover scaling goes on the inner button instead
         const wrapper = document.createElement("div");
+        wrapper.className = "globe-flag-wrapper";
         wrapper.style.pointerEvents = "auto";
+
+        // Flags sit on top of the canvas, so pass scrolling on to let the globe zoom
+        wrapper.addEventListener(
+            "wheel",
+            (e) => {
+                e.preventDefault();
+                globeRef.current
+                    ?.renderer()
+                    .domElement.dispatchEvent(new WheelEvent("wheel", e));
+            },
+            { passive: false },
+        );
 
         const el = document.createElement("button");
         el.type = "button";
@@ -65,6 +84,14 @@ function GlobeView({ countries }: GlobeViewProps) {
         const label = document.createElement("span");
         label.textContent = country.names.common;
         el.appendChild(label);
+
+        const current = weather[countryId(country)];
+        if (current) {
+            const info = document.createElement("span");
+            info.className = "globe-flag-weather";
+            info.textContent = `${Math.round(current.temperature)}° · ${Math.round(current.windSpeed)} m/s`;
+            wrapper.appendChild(info);
+        }
 
         // Pause the spin while hovering so the flag is easy to click
         const setAutoRotate = (on: boolean) => {
@@ -91,6 +118,13 @@ function GlobeView({ countries }: GlobeViewProps) {
                     atmosphereColor="#d6b56e"
                     atmosphereAltitude={0.15}
                     onGlobeReady={handleGlobeReady}
+                    // Toggled on the container directly so zooming doesn't re-render the globe
+                    onZoom={({ altitude }) =>
+                        containerRef.current?.classList.toggle(
+                            "show-globe-weather",
+                            altitude < SHOW_WEATHER_ALTITUDE,
+                        )
+                    }
                     htmlElementsData={placed}
                     htmlLat={(d) => (d as CountrySummary).coordinates!.lat}
                     htmlLng={(d) => (d as CountrySummary).coordinates!.lng}

@@ -1,6 +1,9 @@
 import { Suspense } from "react";
 import fetchAllCountries from "../components/get-all";
 import CountryGlobe from "./components/country-globe";
+import { fetchGlobeWeather, GlobeWeather } from "./components/globe-weather";
+import { countryId } from "../lib/country-href";
+import { weatherLocation } from "../lib/weather-location";
 
 function TestGlobePage() {
     return (
@@ -13,6 +16,19 @@ function TestGlobePage() {
 async function GlobeWithCountries() {
     const countries = await fetchAllCountries();
 
-    return <CountryGlobe countries={countries} />;
+    // Same place as the weather in the country popup, so the numbers match
+    const located = countries.flatMap((c) => {
+        const point = weatherLocation(c.capitals, c.coordinates);
+        return point ? [{ id: countryId(c), point }] : [];
+    });
+    const results = await fetchGlobeWeather(located.map((l) => l.point));
+
+    const weather: Record<string, GlobeWeather> = {};
+    located.forEach((l, i) => {
+        const result = results[i];
+        if (result) weather[l.id] = result;
+    });
+
+    return <CountryGlobe countries={countries} weather={weather} />;
 }
 export default TestGlobePage;
