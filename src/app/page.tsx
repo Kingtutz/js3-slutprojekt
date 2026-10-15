@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import CountryList from "./components/country-list";
 import Search from "./components/search";
 import fetchAllCountries from "./components/get-all";
@@ -6,7 +7,19 @@ import RegionSorting from "./components/region-sorting";
 
 const PAGE_SIZE = 24;
 
-async function Home({ searchParams }: PageProps<"/">) {
+function Home({ searchParams }: PageProps<"/">) {
+    return (
+        <Suspense
+            fallback={<p className="p-4 text-[#d6b56e]">Loading countries...</p>}>
+            <Countries searchParams={searchParams} />
+        </Suspense>
+    );
+}
+
+// Reads searchParams at request time, so it must render inside <Suspense>
+async function Countries({
+    searchParams,
+}: Pick<PageProps<"/">, "searchParams">) {
     const { page, q, region } = await searchParams;
     const query = typeof q === "string" ? q.trim() : "";
     const activeRegion = typeof region === "string" ? region : "";

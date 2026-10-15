@@ -5,3 +5,44 @@
   --font-serif: var(--font-playfair);
   --font-mono: var(--font-geist-mono);
 }
+
+/* Flags placed on the globe (built in globe-view.tsx) */
+.globe-flag {
+    position: relative;
+    display: block;
+    padding: 0;
+    border: 1px solid #3a2f24;
+    background: transparent;
+    cursor: pointer;
+    transition: transform 150ms;
+}
+.globe-flag img {
+    display: block;
+    width: 22px;
+    height: auto;
+}
+.globe-flag span {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 4px);
+    transform: translateX(-50%);
+    padding: 2px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    color: #0b0908;
+    background: #d6b56e;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms;
+}
+.globe-flag:hover,
+.globe-flag:focus-visible {
+    z-index: 10;
+    border-color: #d6b56e;
+    transform: scale(2);
+    outline: none;
+}
+.globe-flag:hover span,
+.globe-flag:focus-visible span {
+    opacity: 1;
+}

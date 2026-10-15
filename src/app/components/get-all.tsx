@@ -14,7 +14,7 @@ async function fetchAllCountries(): Promise<CountrySummary[]> {
     while (more) {
         const url =
             `https://api.restcountries.com/countries/v5?limit=100&offset=${offset}` +
-            `&response_fields=names.common,codes.alpha_2,flag.emoji,flag.url_svg,flag.url_png,region,capitals`;
+            `&response_fields=names.common,codes.alpha_2,codes.alpha_3,flag.emoji,flag.url_svg,flag.url_png,region,capitals,coordinates`;
         const res = await fetch(url, {
             headers: {
                 Authorization: `Bearer rc_live_c28990d38d7d45e59ccc844a2cec566c`,

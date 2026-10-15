@@ -1,13 +1,30 @@
-import Form from "next/form";
+"use client";
 
-type SearchProps = {
+import Form from "next/form";
+import { useSearchParams } from "next/navigation";
+
+type SearchFormProps = {
     query: string;
+    region: string;
 };
 
-function Search({ query }: SearchProps) {
+// Reads the current URL so a new search keeps the selected region
+function Search() {
+    const searchParams = useSearchParams();
+    return (
+        <SearchForm
+            query={searchParams.get("q") ?? ""}
+            region={searchParams.get("region") ?? ""}
+        />
+    );
+}
+
+export function SearchForm({ query, region }: SearchFormProps) {
     return (
         <Form action="/" className="flex items-center gap-2 m-2">
+            {region && <input type="hidden" name="region" value={region} />}
             <input
+                key={query}
                 className="w-100 min-h-11 px-4 py-3 bg-transparent text-[#d6b56e] caret-[#d6b56e] placeholder:text-[#8a7a66] border border-[#3a2f24] rounded-xs hover:border-[#d6b56e] focus:border-[#d6b56e] focus-visible:outline-2 focus-visible:outline-[#d6b56e] focus-visible:outline-offset-2 autofill:shadow-[inset_0_0_0_1000px_#0b0908] autofill:[-webkit-text-fill-color:#d6b56e]"
                 type="text"
                 autoComplete="off"

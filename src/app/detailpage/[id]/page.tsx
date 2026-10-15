@@ -1,27 +1,49 @@
+import { Suspense } from "react";
+import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CountriesResponse } from "../../types/country.type";
 
-async function DetailPage({ params }: PageProps<"/detailpage/[id]">) {
-    const { id } = await params;
-    const name = decodeURIComponent(id);
+async function fetchCountry(code: string): Promise<CountriesResponse> {
+    "use cache";
+    cacheLife("days");
 
     const res = await fetch(
-        `https://api.restcountries.com/countries/v5?q=${encodeURIComponent(name)}`,
+        `https://api.restcountries.com/countries/v5/codes.alpha_3/${encodeURIComponent(code)}`,
         {
             headers: {
                 Authorization: `Bearer rc_live_c28990d38d7d45e59ccc844a2cec566c`,
             },
         },
     );
+    // Unknown codes come back as 404, which the page turns into notFound()
+    if (res.status === 404) {
+        return { data: { objects: [], meta: { count: 0, more: false } } };
+    }
     if (!res.ok) {
         throw new Error(`Failed to fetch country: ${res.status}`);
     }
 
-    const json: CountriesResponse = await res.json();
-    const country = json.data.objects.find(
-        (c) => c.names.common.toLowerCase() === name.toLowerCase(),
+    return res.json();
+}
+
+function DetailPage({ params }: PageProps<"/detailpage/[id]">) {
+    return (
+        <Suspense fallback={<p className="p-4">Loading country...</p>}>
+            <CountryDetail params={params} />
+        </Suspense>
     );
+}
+
+// Reads params at request time, so it must render inside <Suspense>
+async function CountryDetail({
+    params,
+}: Pick<PageProps<"/detailpage/[id]">, "params">) {
+    const { id } = await params;
+    const code = id.toUpperCase();
+
+    const json = await fetchCountry(code);
+    const country = json.data.objects[0];
 
     if (!country) {
         notFound();

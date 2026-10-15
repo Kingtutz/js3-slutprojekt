@@ -6,6 +6,14 @@ type CountryListProps = {
 };
 
 function CountryList({ countries }: CountryListProps) {
+    if (countries.length === 0) {
+        return (
+            <p className="p-4 text-center text-[#d6b56e]">
+                Inga länder hittades
+            </p>
+        );
+    }
+
     return (
         <div className="grid grid-cols-3 gap-1 p-2">
             {countries.map((c) => {
@@ -15,17 +23,17 @@ function CountryList({ countries }: CountryListProps) {
 
                 return (
                     <div
-                        key={c.names.common}
+                        key={c.codes.alpha_3}
                         className="px-4 py-3 bg-transparent text-[#d6b56e] border border-[#3a2f24] rounded-xs hover:border-[#d6b56e]">
                         <Link
                             className="grid grid-cols-2"
-                            href={`/detailpage/${encodeURIComponent(c.names.common)}`}>
+                            href={`/detailpage/${c.codes.alpha_3}`}>
                             <div>
                                 {(c.flag.url_svg || c.flag.url_png) && (
                                     <img
                                         src={c.flag.url_svg || c.flag.url_png}
                                         alt={`Flag of ${c.names.common}`}
-                                        className="max-w-25 max-h-25"
+                                        className="max-w-25 max-h-25 border border-[#d6b56e]"
                                     />
                                 )}
                             </div>

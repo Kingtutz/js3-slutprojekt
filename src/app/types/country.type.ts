@@ -132,10 +132,11 @@ export type Country = {
 
 export type CountrySummary = {
     names: Pick<CountryNames, "common">;
-    codes: Pick<CountryCodes, "alpha_2">;
+    codes: Pick<CountryCodes, "alpha_2" | "alpha_3">;
     flag: Pick<Flag, "emoji" | "url_svg" | "url_png">;
     region: string;
     capitals?: Capital[];
+    coordinates?: Coordinates;
 };
 
 export type CountriesResponse<T = Country> = {
