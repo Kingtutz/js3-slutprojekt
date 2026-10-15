@@ -37,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 </header>
                 <main>{children}</main>
                 <footer>
-                    <h3 className="flex place-content-center font-medium text-[24px] text-[#d6b56e] mb-1.5">
+                    <h3 className="flex place-content-center text-center px-4 py-4 font-medium text-[18px] sm:text-[24px] text-[#d6b56e] mb-1.5">
                         Slutproject Javascript 3 2026 @Charlie
                     </h3>
                 </footer>

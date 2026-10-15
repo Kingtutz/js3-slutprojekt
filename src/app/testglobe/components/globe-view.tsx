@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Globe, { GlobeMethods } from "react-globe.gl";
 import { CountrySummary } from "../../types/country.type";
+import { countryHref } from "../../lib/country-href";
 
 type GlobeViewProps = {
     countries: CountrySummary[];
@@ -73,13 +74,13 @@ function GlobeView({ countries }: GlobeViewProps) {
         el.onmouseenter = () => setAutoRotate(false);
         el.onmouseleave = () => setAutoRotate(true);
         el.onclick = () =>
-            router.push(`/detailpage/${country.codes.alpha_3}`);
+            router.push(countryHref(country));
 
         return wrapper;
     };
 
     return (
-        <div ref={containerRef} className="w-full h-[calc(100vh-180px)]">
+        <div ref={containerRef} className="w-full h-[calc(100dvh-220px)] md:h-[calc(100dvh-180px)]">
             {size.width > 0 && (
                 <Globe
                     ref={globeRef}

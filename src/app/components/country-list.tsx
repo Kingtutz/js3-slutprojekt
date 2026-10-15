@@ -1,5 +1,6 @@
 import { CountrySummary } from "../types/country.type";
 import Link from "next/link";
+import { countryHref, countryId } from "../lib/country-href";
 
 type CountryListProps = {
     countries: CountrySummary[];
@@ -15,7 +16,7 @@ function CountryList({ countries }: CountryListProps) {
     }
 
     return (
-        <div className="grid grid-cols-3 gap-1 p-2">
+        <div className="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 sm:gap-1 sm:p-2 lg:grid-cols-3">
             {countries.map((c) => {
                 const capital =
                     c.capitals?.find((cap) => cap.attributes.primary)?.name ??
@@ -23,11 +24,11 @@ function CountryList({ countries }: CountryListProps) {
 
                 return (
                     <div
-                        key={c.codes.alpha_3}
+                        key={countryId(c)}
                         className="px-4 py-3 bg-transparent text-[#d6b56e] border border-[#3a2f24] rounded-xs hover:border-[#d6b56e]">
                         <Link
-                            className="grid grid-cols-2"
-                            href={`/detailpage/${c.codes.alpha_3}`}>
+                            className="grid grid-cols-[96px_1fr] items-center gap-4 sm:grid-cols-2 sm:items-start sm:gap-0"
+                            href={countryHref(c)}>
                             <div>
                                 {(c.flag.url_svg || c.flag.url_png) && (
                                     <img
