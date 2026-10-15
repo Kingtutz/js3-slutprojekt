@@ -7,6 +7,26 @@
 }
 
 /* Flags placed on the globe (built in globe-view.tsx) */
+.globe-flag-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* Hidden when zoomed out (too crowded), shown on hover or when zoomed in */
+.globe-flag-weather {
+    display: none;
+    margin-top: 2px;
+    font-size: 10px;
+    line-height: 1;
+    white-space: nowrap;
+    color: #f1e6d2;
+    text-shadow: 0 0 3px #0b0908, 0 0 3px #0b0908;
+    pointer-events: none;
+}
+.show-globe-weather .globe-flag-weather,
+.globe-flag-wrapper:hover .globe-flag-weather {
+    display: block;
+}
 .globe-flag {
     position: relative;
     display: block;

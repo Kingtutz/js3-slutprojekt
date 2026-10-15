@@ -3,6 +3,7 @@ import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
 import { CountriesResponse } from "../types/country.type";
 import Weather from "./weather";
+import { weatherLocation } from "../lib/weather-location";
 
 async function fetchCountries(path: string): Promise<CountriesResponse> {
     "use cache";
@@ -67,8 +68,7 @@ async function CountryDetail({ params }: CountryDetailProps) {
     const primaryCapital =
         capitals.find((c) => c.attributes.primary) ?? capitals[0];
     const capital = primaryCapital?.name;
-    // Weather for the capital where most people are, otherwise the country's centre
-    const weatherAt = primaryCapital?.coordinates ?? coordinates;
+    const weatherAt = weatherLocation(capitals, coordinates);
 
     return (
         <div className="flex flex-col gap-2 text-[#d6b56e]">

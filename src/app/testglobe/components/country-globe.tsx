@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { CountrySummary } from "../../types/country.type";
+import { GlobeWeather } from "./globe-weather";
 
 // The globe uses WebGL, which only exists in the browser, so skip server rendering
 const GlobeView = dynamic(() => import("./globe-view"), {
@@ -11,10 +12,11 @@ const GlobeView = dynamic(() => import("./globe-view"), {
 
 type CountryGlobeProps = {
     countries: CountrySummary[];
+    weather: Record<string, GlobeWeather>;
 };
 
-function CountryGlobe({ countries }: CountryGlobeProps) {
-    return <GlobeView countries={countries} />;
+function CountryGlobe({ countries, weather }: CountryGlobeProps) {
+    return <GlobeView countries={countries} weather={weather} />;
 }
 
 export default CountryGlobe;
