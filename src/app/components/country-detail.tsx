@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
 import { CountriesResponse } from "../types/country.type";
+import Weather from "./weather";
 
 async function fetchCountries(path: string): Promise<CountriesResponse> {
     "use cache";
@@ -24,7 +26,6 @@ async function fetchCountries(path: string): Promise<CountriesResponse> {
     return res.json();
 }
 
-// Most links use the alpha_3 code, but countries without one (e.g. Abkhazia) link by name
 async function findCountry(id: string) {
     if (/^[a-z]{3}$/i.test(id)) {
         const byCode = await fetchCountries(
@@ -52,11 +53,22 @@ async function CountryDetail({ params }: CountryDetailProps) {
         notFound();
     }
 
-    const { names, flag, capitals, area, currencies, languages, descriptions } =
-        country;
+    const {
+        names,
+        flag,
+        capitals,
+        area,
+        currencies,
+        languages,
+        descriptions,
+        coordinates,
+    } = country;
     const flagUrl = flag.url_svg || flag.url_png;
-    const capital =
-        capitals.find((c) => c.attributes.primary)?.name ?? capitals[0]?.name;
+    const primaryCapital =
+        capitals.find((c) => c.attributes.primary) ?? capitals[0];
+    const capital = primaryCapital?.name;
+    // Weather for the capital where most people are, otherwise the country's centre
+    const weatherAt = primaryCapital?.coordinates ?? coordinates;
 
     return (
         <div className="flex flex-col gap-2 text-[#d6b56e]">
@@ -104,6 +116,15 @@ async function CountryDetail({ params }: CountryDetailProps) {
                     </>
                 )}
             </dl>
+
+            {weatherAt && (
+                <Suspense fallback={<p>Loading weather...</p>}>
+                    <Weather
+                        coordinates={weatherAt}
+                        place={capital ?? names.common}
+                    />
+                </Suspense>
+            )}
 
             {names.alternates?.length > 0 && (
                 <p>Also known as: {names.alternates.join(", ")}</p>
