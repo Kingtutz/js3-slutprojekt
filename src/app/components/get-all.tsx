@@ -17,7 +17,7 @@ async function fetchAllCountries(): Promise<CountrySummary[]> {
             `&response_fields=names.common,codes.alpha_2,codes.alpha_3,flag.emoji,flag.url_svg,flag.url_png,region,capitals,coordinates`;
         const res = await fetch(url, {
             headers: {
-                Authorization: `Bearer rc_live_c28990d38d7d45e59ccc844a2cec566c`,
+                Authorization: `Bearer ${process.env.RESTCOUNTRIES_API_KEY}`,
             },
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
