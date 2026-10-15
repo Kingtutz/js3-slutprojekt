@@ -8,13 +8,16 @@ function Search({ query }: SearchProps) {
     return (
         <Form action="/" className="flex items-center gap-2 m-2">
             <input
-                className="border w-100 h-10 p-2 rounded-2xl"
+                className="w-100 min-h-11 px-4 py-3 bg-transparent text-[#d6b56e] caret-[#d6b56e] placeholder:text-[#8a7a66] border border-[#3a2f24] rounded-xs hover:border-[#d6b56e] focus:border-[#d6b56e] focus-visible:outline-2 focus-visible:outline-[#d6b56e] focus-visible:outline-offset-2 autofill:shadow-[inset_0_0_0_1000px_#0b0908] autofill:[-webkit-text-fill-color:#d6b56e]"
                 type="text"
+                autoComplete="off"
                 name="q"
                 defaultValue={query}
                 placeholder="Search..."
             />
-            <button type="submit" className="border h-10 px-4 rounded-2xl">
+            <button
+                type="submit"
+                className="text-sm font-medium tracking-[0.22em] uppercase text-[#d6b56e] bg-transparent border border-[#3a2f24] rounded-xs px-5 py-3 min-h-11 cursor-pointer hover:border-[#d6b56e] aria-pressed:bg-[#d6b56e] aria-pressed:text-[#0b0908] aria-pressed:border-[#d6b56e] focus-visible:outline-2 focus-visible:outline-[#d6b56e] focus-visible:outline-offset-2">
                 Search
             </button>
         </Form>

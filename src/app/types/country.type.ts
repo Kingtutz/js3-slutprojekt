@@ -130,8 +130,20 @@ export type Country = {
     languages: Language[];
 };
 
-export type CountriesResponse = {
+export type CountrySummary = {
+    names: Pick<CountryNames, "common">;
+    codes: Pick<CountryCodes, "alpha_2">;
+    flag: Pick<Flag, "emoji" | "url_svg" | "url_png">;
+    region: string;
+    capitals?: Capital[];
+};
+
+export type CountriesResponse<T = Country> = {
     data: {
-        objects: Country[];
+        objects: T[];
+        meta: {
+            count: number;
+            more: boolean;
+        };
     };
 };

@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Jost, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Nav } from "./components/nav";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
+const jost = Jost({
+    variable: "--font-jost",
     subsets: ["latin"],
+    weight: ["400", "500"],
+});
+
+const playfair = Playfair_Display({
+    variable: "--font-playfair",
+    subsets: ["latin"],
+    weight: ["400", "500"],
+    style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
@@ -22,13 +30,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     return (
         <html
             lang="sv"
-            className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-            <body className="min-h-full flex flex-col font-sans">
-                <header>
+            className={`${jost.variable} ${playfair.variable} ${geistMono.variable} h-full antialiased`}>
+            <body className="min-h-full flex flex-col font-sans bg-[#0b0908] text-[#f1e6d2]">
+                <header className="sticky top-0 z-10 bg-[rgba(11,9,8,0.94)] border-b border-[#3a2f24]">
                     <Nav />
                 </header>
                 <main>{children}</main>
-                <footer>Slutproject Javascript 3 2026 @Charlie</footer>
+                <footer>
+                    <h3 className="flex place-content-center font-medium text-[24px] text-[#d6b56e] mb-1.5">
+                        Slutproject Javascript 3 2026 @Charlie
+                    </h3>
+                </footer>
             </body>
         </html>
     );

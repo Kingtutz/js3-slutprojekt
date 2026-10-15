@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-jost);
+  --font-serif: var(--font-playfair);
   --font-mono: var(--font-geist-mono);
 }

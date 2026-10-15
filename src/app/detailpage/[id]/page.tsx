@@ -10,7 +10,7 @@ async function DetailPage({ params }: PageProps<"/detailpage/[id]">) {
         `https://api.restcountries.com/countries/v5?q=${encodeURIComponent(name)}`,
         {
             headers: {
-                Authorization: `Bearer ${process.env.RESTCOUNTRIES_API_KEY}`,
+                Authorization: `Bearer rc_live_c28990d38d7d45e59ccc844a2cec566c`,
             },
         },
     );
@@ -43,7 +43,7 @@ async function DetailPage({ params }: PageProps<"/detailpage/[id]">) {
                     className="max-w-60"
                 />
             )}
-            <h1 className="text-2xl font-bold">{names.common}</h1>
+            <h1 className="font-serif italic font-normal text-[36px] mb-1.5">{names.common}</h1>
             <p>{names.official}</p>
 
             {descriptions.long && <p>{descriptions.long}</p>}

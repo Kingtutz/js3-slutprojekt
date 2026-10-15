@@ -1,54 +1,46 @@
-import Link from "next/link";
 import CountryList from "./components/country-list";
 import Search from "./components/search";
-import { CountriesResponse } from "./types/country.type";
+import fetchAllCountries from "./components/get-all";
+import Pagination from "./components/pagination";
+import RegionSorting from "./components/region-sorting";
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 24;
 
 async function Home({ searchParams }: PageProps<"/">) {
-    const { page, q } = await searchParams;
+    const { page, q, region } = await searchParams;
     const query = typeof q === "string" ? q.trim() : "";
-    const currentPage = Math.max(1, Number(page) || 1);
-    const offset = (currentPage - 1) * PAGE_SIZE;
+    const activeRegion = typeof region === "string" ? region : "";
 
-    const params = new URLSearchParams({
-        limit: String(PAGE_SIZE),
-        offset: String(offset),
-    });
-    if (query) params.set("q", query);
+    const allCountries = await fetchAllCountries();
+    const regions = [
+        ...new Set(allCountries.map((c) => c.region).filter(Boolean)),
+    ].sort();
 
-    const pageHref = (p: number) =>
-        query ? `/?q=${encodeURIComponent(query)}&page=${p}` : `/?page=${p}`;
-
-    const res = await fetch(
-        `https://api.restcountries.com/countries/v5?${params}`,
-        {
-            headers: {
-                Authorization: `Bearer ${process.env.RESTCOUNTRIES_API_KEY}`,
-            },
-        },
+    const matches = allCountries.filter(
+        (c) =>
+            (!activeRegion || c.region === activeRegion) &&
+            c.names.common.toLowerCase().includes(query.toLowerCase()),
     );
-    if (!res.ok) {
-        throw new Error(`Failed to fetch countries: ${res.status}`);
-    }
 
-    const json: CountriesResponse = await res.json();
-    const countries = json.data.objects;
-    const hasNextPage = countries.length === PAGE_SIZE;
+    const totalPages = Math.max(1, Math.ceil(matches.length / PAGE_SIZE));
+    const currentPage = Math.min(totalPages, Math.max(1, Number(page) || 1));
+    const offset = (currentPage - 1) * PAGE_SIZE;
+    const countries = matches.slice(offset, offset + PAGE_SIZE);
 
     return (
         <>
-            <Search query={query} />
+            <RegionSorting
+                regions={regions}
+                activeRegion={activeRegion}
+                query={query}
+            />
             <CountryList countries={countries} />
-            <nav className="flex gap-4 items-center justify-center p-4">
-                {currentPage > 1 && (
-                    <Link href={pageHref(currentPage - 1)}>Previous</Link>
-                )}
-                <span>Page {currentPage}</span>
-                {hasNextPage && (
-                    <Link href={pageHref(currentPage + 1)}>Next</Link>
-                )}
-            </nav>
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                query={query}
+                region={activeRegion}
+            />
         </>
     );
 }
