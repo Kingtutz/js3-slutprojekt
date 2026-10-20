@@ -4,9 +4,11 @@ import { countryHref, countryId } from "../lib/country-href";
 
 type CountryListProps = {
     countries: CountrySummary[];
+    // Current search, region and page, kept in the links so Back returns here
+    homeSearch: string;
 };
 
-function CountryList({ countries }: CountryListProps) {
+function CountryList({ countries, homeSearch }: CountryListProps) {
     if (countries.length === 0) {
         return (
             <p className="p-4 text-center text-[#d6b56e]">
@@ -28,7 +30,7 @@ function CountryList({ countries }: CountryListProps) {
                         className="px-4 py-3 bg-transparent text-[#d6b56e] border border-[#3a2f24] rounded-xs hover:border-[#d6b56e]">
                         <Link
                             className="grid grid-cols-[96px_1fr] items-center gap-4 sm:grid-cols-2 sm:items-start sm:gap-0"
-                            href={countryHref(c)}>
+                            href={countryHref(c, homeSearch)}>
                             <div>
                                 {(c.flag.url_svg || c.flag.url_png) && (
                                     <img

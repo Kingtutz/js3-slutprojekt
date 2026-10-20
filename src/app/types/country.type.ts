@@ -143,6 +143,7 @@ export type CountriesResponse<T = Country> = {
     data: {
         objects: T[];
         meta: {
+            total: number;
             count: number;
             more: boolean;
         };

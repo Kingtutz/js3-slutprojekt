@@ -3,6 +3,7 @@ import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
 import { CountriesResponse } from "../types/country.type";
 import Weather from "./weather";
+import WikiIntro from "./wiki-intro";
 import { weatherLocation } from "../lib/weather-location";
 
 async function fetchCountries(path: string): Promise<CountriesResponse> {
@@ -18,7 +19,7 @@ async function fetchCountries(path: string): Promise<CountriesResponse> {
         },
     );
     if (res.status === 404) {
-        return { data: { objects: [], meta: { count: 0, more: false } } };
+        return { data: { objects: [], meta: { total: 0, count: 0, more: false } } };
     }
     if (!res.ok) {
         throw new Error(`Failed to fetch country: ${res.status}`);
@@ -43,10 +44,12 @@ async function findCountry(id: string) {
 
 type CountryDetailProps = {
     params: Promise<{ code: string }>;
+    // The Wikipedia intro is only shown on the full country page, not in the globe popup
+    showWikiIntro?: boolean;
 };
 
 // Shared by the full country page and the popup on the globe
-async function CountryDetail({ params }: CountryDetailProps) {
+async function CountryDetail({ params, showWikiIntro }: CountryDetailProps) {
     const { code } = await params;
     const country = await findCountry(decodeURIComponent(code));
 
@@ -72,19 +75,36 @@ async function CountryDetail({ params }: CountryDetailProps) {
 
     return (
         <div className="flex flex-col gap-2 text-[#d6b56e]">
-            {flagUrl && (
+            {/* {flagUrl && (
                 <img
                     src={flagUrl}
                     alt={flag.description || names.common}
                     className="w-full max-w-60 border border-[#d6b56e]"
                 />
-            )}
+            )} */}
             <h1 className="font-serif italic font-normal text-[28px] sm:text-[36px] mb-1.5">
                 {names.common}
             </h1>
             <p>{names.official}</p>
 
-            {descriptions.long && <p>{descriptions.long}</p>}
+            {showWikiIntro ? (
+                <Suspense fallback={<p>Loading Wikipedia intro...</p>}>
+                    <WikiIntro
+                        commonName={names.common}
+                        officialName={names.official}
+                    />
+                </Suspense>
+            ) : (
+                descriptions.long && <p>{descriptions.long}</p>
+            )}
+            {weatherAt && (
+                <Suspense fallback={<p>Loading weather...</p>}>
+                    <Weather
+                        coordinates={weatherAt}
+                        place={capital ?? names.common}
+                    />
+                </Suspense>
+            )}
 
             <dl className="grid grid-cols-1 gap-y-1 sm:grid-cols-[auto_1fr] sm:gap-x-4">
                 {capital && (
@@ -116,15 +136,6 @@ async function CountryDetail({ params }: CountryDetailProps) {
                     </>
                 )}
             </dl>
-
-            {weatherAt && (
-                <Suspense fallback={<p>Loading weather...</p>}>
-                    <Weather
-                        coordinates={weatherAt}
-                        place={capital ?? names.common}
-                    />
-                </Suspense>
-            )}
 
             {names.alternates?.length > 0 && (
                 <p>Also known as: {names.alternates.join(", ")}</p>

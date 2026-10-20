@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Jost, Playfair_Display } from "next/font/google";
+import { Geist_Mono, Jost, Playfair_Display, Geist } from "next/font/google";
 import "./globals.css";
 import { Nav } from "./components/nav";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const jost = Jost({
     variable: "--font-jost",
@@ -30,7 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     return (
         <html
             lang="sv"
-            className={`${jost.variable} ${playfair.variable} ${geistMono.variable} h-full antialiased`}>
+            className={cn("h-full", "antialiased", jost.variable, playfair.variable, geistMono.variable, "font-sans", geist.variable)}>
             <body className="min-h-full flex flex-col font-sans bg-[#0b0908] text-[#f1e6d2]">
                 <header className="sticky top-0 z-10 bg-[rgba(11,9,8,0.94)] border-b border-[#3a2f24]">
                     <Nav />
