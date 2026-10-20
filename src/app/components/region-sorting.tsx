@@ -12,7 +12,7 @@ const buttonClass =
 
 function RegionSorting({ regions, activeRegion, query }: RegionSortingProps) {
     return (
-        <div className="flex gap-2 overflow-x-auto px-4 py-3 sm:m-2 sm:flex-wrap sm:overflow-visible sm:p-0">
+        <div className="flex gap-2 justify-self-center overflow-x-auto px-4 py-3 sm:m-2 sm:flex-wrap sm:overflow-visible sm:p-0">
             <Link
                 href={homeHref({ query })}
                 aria-current={!activeRegion}
