@@ -4,6 +4,7 @@ import Search from "./components/search";
 import fetchAllCountries from "./components/get-all";
 import Pagination from "./components/pagination";
 import RegionSorting from "./components/region-sorting";
+import { homeHref } from "./lib/home-href";
 
 const PAGE_SIZE = 24;
 
@@ -47,7 +48,15 @@ async function Countries({
                 activeRegion={activeRegion}
                 query={query}
             />
-            <CountryList countries={countries} />
+            <CountryList
+                countries={countries}
+                // "/?q=...&region=..." → "?q=...&region=..."
+                homeSearch={homeHref({
+                    query,
+                    region: activeRegion,
+                    page: currentPage,
+                }).slice(1)}
+            />
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

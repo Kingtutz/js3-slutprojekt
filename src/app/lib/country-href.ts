@@ -5,6 +5,8 @@ export function countryId(country: CountrySummary) {
     return country.codes.alpha_3 || country.names.common;
 }
 
-export function countryHref(country: CountrySummary) {
-    return `/country/${encodeURIComponent(countryId(country))}`;
+// homeSearch is the home page's query string (e.g. "?q=sw&region=Europe"),
+// passed along so the Back link can return to the same search
+export function countryHref(country: CountrySummary, homeSearch = "") {
+    return `/country/${encodeURIComponent(countryId(country))}${homeSearch}`;
 }

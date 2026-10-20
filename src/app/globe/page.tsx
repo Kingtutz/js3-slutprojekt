@@ -4,10 +4,16 @@ import CountryGlobe from "./components/country-globe";
 import { fetchGlobeWeather, GlobeWeather } from "./components/globe-weather";
 import { countryId } from "../lib/country-href";
 import { weatherLocation } from "../lib/weather-location";
-
+import { Spinner } from "@/components/ui/spinner";
 function GlobePage() {
     return (
-        <Suspense fallback={<p className="p-4 text-[#d6b56e]">Loading globe...</p>}>
+        <Suspense
+            fallback={
+                <>
+                    <Spinner />
+                    <p className="p-4 text-[#d6b56e]">Loading globe...</p>
+                </>
+            }>
             <GlobeWithCountries />
         </Suspense>
     );
