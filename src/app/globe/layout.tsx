@@ -1,5 +1,5 @@
 // The modal slot shows a country popup on top of the globe
-function TestGlobeLayout({ children, modal }: LayoutProps<"/testglobe">) {
+function GlobeLayout({ children, modal }: LayoutProps<"/globe">) {
     return (
         <>
             {children}
@@ -7,4 +7,4 @@ function TestGlobeLayout({ children, modal }: LayoutProps<"/testglobe">) {
         </>
     );
 }
-export default TestGlobeLayout;
+export default GlobeLayout;

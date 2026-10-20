@@ -7,7 +7,7 @@ type ModalProps = {
     children: React.ReactNode;
 };
 
-// Closing goes back in history, so the URL returns to /testglobe
+// Closing goes back in history, so the URL returns to /globe
 function Modal({ children }: ModalProps) {
     const router = useRouter();
     const dialogRef = useRef<HTMLDialogElement>(null);

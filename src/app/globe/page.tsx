@@ -5,7 +5,7 @@ import { fetchGlobeWeather, GlobeWeather } from "./components/globe-weather";
 import { countryId } from "../lib/country-href";
 import { weatherLocation } from "../lib/weather-location";
 
-function TestGlobePage() {
+function GlobePage() {
     return (
         <Suspense fallback={<p className="p-4 text-[#d6b56e]">Loading globe...</p>}>
             <GlobeWithCountries />
@@ -31,4 +31,4 @@ async function GlobeWithCountries() {
 
     return <CountryGlobe countries={countries} weather={weather} />;
 }
-export default TestGlobePage;
+export default GlobePage;
