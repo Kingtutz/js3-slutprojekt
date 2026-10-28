@@ -12,7 +12,7 @@ function CountryList({ countries, homeSearch }: CountryListProps) {
     if (countries.length === 0) {
         return (
             <p className="p-4 text-center text-[#d6b56e]">
-                Inga länder hittades
+                Inga länder matchar dina kriterier
             </p>
         );
     }
@@ -35,17 +35,17 @@ function CountryList({ countries, homeSearch }: CountryListProps) {
                                 {(c.flag.url_svg || c.flag.url_png) && (
                                     <img
                                         src={c.flag.url_svg || c.flag.url_png}
-                                        alt={`Flag of ${c.names.common}`}
+                                        alt={`Flagga för ${c.names.common}`}
                                         className="max-w-25 max-h-25 border border-[#d6b56e]"
                                     />
                                 )}
                             </div>
                             <div>
                                 <h2 className="text-[#d6b56e]">
-                                    Name: {c.names.common}
+                                    Namn: {c.names.common}
                                 </h2>
                                 <p>Region: {c.region}</p>
-                                {capital && <p>Capital: {capital}</p>}
+                                {capital && <p>Huvudstad: {capital}</p>}
                             </div>
                         </Link>
                     </div>

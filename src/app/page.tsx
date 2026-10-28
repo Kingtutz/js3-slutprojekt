@@ -11,7 +11,7 @@ const PAGE_SIZE = 24;
 function Home({ searchParams }: PageProps<"/">) {
     return (
         <Suspense
-            fallback={<p className="p-4 text-[#d6b56e]">Loading countries...</p>}>
+            fallback={<p className="p-4 text-[#d6b56e]">Laddar länder...</p>}>
             <Countries searchParams={searchParams} />
         </Suspense>
     );

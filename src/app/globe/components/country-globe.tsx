@@ -7,7 +7,7 @@ import { GlobeWeather } from "./globe-weather";
 // The globe uses WebGL, which only exists in the browser, so skip server rendering
 const GlobeView = dynamic(() => import("./globe-view"), {
     ssr: false,
-    loading: () => <p className="p-4 text-[#d6b56e]">Loading globe...</p>,
+    loading: () => <p className="p-4 text-[#d6b56e]">Laddar glob...</p>,
 });
 
 type CountryGlobeProps = {

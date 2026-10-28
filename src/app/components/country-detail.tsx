@@ -19,7 +19,9 @@ async function fetchCountries(path: string): Promise<CountriesResponse> {
         },
     );
     if (res.status === 404) {
-        return { data: { objects: [], meta: { total: 0, count: 0, more: false } } };
+        return {
+            data: { objects: [], meta: { total: 0, count: 0, more: false } },
+        };
     }
     if (!res.ok) {
         throw new Error(`Failed to fetch country: ${res.status}`);
@@ -73,20 +75,20 @@ async function CountryDetail({ params, showWikiIntro }: CountryDetailProps) {
     const capital = primaryCapital?.name;
     const weatherAt = weatherLocation(capitals, coordinates);
 
+    // Om man vill ha flagan i detalj sidan komentera in denna snipppeten igen. Valde att ta bort den då Bilden från wikin är oftast flagan.
     return (
         <div className="flex flex-col gap-2 text-[#d6b56e]">
-            {/* {flagUrl && (
+            {flagUrl && (
                 <img
                     src={flagUrl}
                     alt={flag.description || names.common}
                     className="w-full max-w-60 border border-[#d6b56e]"
                 />
-            )} */}
+            )}
             <h1 className="font-serif italic font-normal text-[28px] sm:text-[36px] mb-1.5">
                 {names.common}
             </h1>
             <p>{names.official}</p>
-
             {showWikiIntro ? (
                 <Suspense fallback={<p>Loading Wikipedia intro...</p>}>
                     <WikiIntro
@@ -105,7 +107,6 @@ async function CountryDetail({ params, showWikiIntro }: CountryDetailProps) {
                     />
                 </Suspense>
             )}
-
             <dl className="grid grid-cols-1 gap-y-1 sm:grid-cols-[auto_1fr] sm:gap-x-4">
                 {capital && (
                     <>
@@ -136,11 +137,9 @@ async function CountryDetail({ params, showWikiIntro }: CountryDetailProps) {
                     </>
                 )}
             </dl>
-
             {names.alternates?.length > 0 && (
                 <p>Also known as: {names.alternates.join(", ")}</p>
             )}
-
             {names.native && (
                 <div>
                     <h2 className="font-semibold">Native names</h2>

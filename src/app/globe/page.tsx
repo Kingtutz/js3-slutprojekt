@@ -11,7 +11,7 @@ function GlobePage() {
             fallback={
                 <>
                     <Spinner />
-                    <p className="p-4 text-[#d6b56e]">Loading globe...</p>
+                    <p className="p-4 text-[#d6b56e]">Laddar glob...</p>
                 </>
             }>
             <GlobeWithCountries />

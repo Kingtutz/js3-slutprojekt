@@ -7,14 +7,14 @@ import { homeHref } from "../../lib/home-href";
 function DetailPage({ params, searchParams }: PageProps<"/country/[code]">) {
     return (
         <div className="m-4 flex flex-col gap-2 p-4 sm:p-6 md:mx-auto md:my-8 md:max-w-3xl bg-transparent text-[#d6b56e] border border-[#3a2f24] rounded-xs hover:border-[#d6b56e]">
-            <Suspense fallback={<Link href="/">← Back</Link>}>
+            <Suspense fallback={<Link href="/">← Tillbaka</Link>}>
                 <BackLink searchParams={searchParams} />
             </Suspense>
             <Suspense
                 fallback={
                     <>
                         <Spinner />
-                        <p>Loading country...</p>
+                        <p>Laddar land...</p>
                     </>
                 }>
                 <CountryDetail params={params} showWikiIntro />
@@ -34,6 +34,6 @@ async function BackLink({
         region: typeof region === "string" ? region : "",
         page: Number(page) || 1,
     });
-    return <Link href={href}>← Back</Link>;
+    return <Link href={href}>← Tillbaka</Link>;
 }
 export default DetailPage;

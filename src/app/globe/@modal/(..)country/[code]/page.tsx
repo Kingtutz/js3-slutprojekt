@@ -7,7 +7,7 @@ import Modal from "../../../components/modal";
 function CountryModal({ params }: PageProps<"/country/[code]">) {
     return (
         <Modal>
-            <Suspense fallback={<p className="text-[#d6b56e]">Loading country...</p>}>
+            <Suspense fallback={<p className="text-[#d6b56e]">Laddar land...</p>}>
                 <CountryDetail params={params} />
             </Suspense>
         </Modal>

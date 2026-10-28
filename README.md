@@ -1,115 +1,144 @@
 # Var vill du resa?
 
-A travel inspiration app built as the final project (slutprojekt) for JS3. Browse every country in the world, search and filter by region, read facts about each country, and see the current weather in its capital. You can do all of this from a list or from an interactive 3D globe.
+En reseapp byggd som slutprojekt i JavaScript 3 (HT26). Appen visar alla världens länder i en paginerad lista med sökfält och regionfilter. Varje land har en egen sida med basfakta, aktuellt väder i huvudstaden och en introtext med bild från Wikipedia. Det finns också en 3D-glob där man kan klicka på länder.
 
-Built with **Next.js 16 (App Router)**, **React 19**, **TypeScript** and **Tailwind CSS 4**.
+**Deployad app:** https://js3-slutprojekt-public.vercel.app
 
-## Features
+## Funktioner
 
-- **Country list.** The start page shows all countries as cards with flag, name, region and capital, 24 per page.
-- **Search.** Filter countries by name from the search bar in the navigation.
-- **Region filter.** Show only countries in one region (Africa, Americas, Asia, Europe, Oceania…). Search, region and page live in the URL (`/?q=swe&region=Europe&page=2`), so you can share or bookmark any view.
-- **Country page.** `/country/SWE` shows the flag, official and native names, a description, capital, area, currencies, languages and alternate names.
-- **Live weather.** Every country page shows current temperature, feels-like, humidity and wind in the capital.
-- **3D globe.** `/globe` shows a rotatable globe with every country's flag and its current temperature. Clicking a flag opens the country as a popup on top of the globe. If you reload that URL, you get the normal country page.
+- **Landlista.** Startsidan visar länderna som kort med flagga, namn, region och huvudstad, 24 per sida.
+- **Sök.** Sökfältet i navbaren filtrerar länderna på namn.
+- **Regionfilter.** Knappar för varje region plus *All*. Ny sökning eller ny region börjar om på sida 1.
+- **URL-state.** Sida, sökord och region ligger i URL:en (`/?q=fin&region=Europe&page=2`), så en vy kan laddas om, delas och bläddras med bakåtknappen.
+- **Detaljsida.** `/country/SWE` visar landets namn, namn på landets egna språk, huvudstad, yta, språk och valuta. En ogiltig kod (t.ex. `/country/XYZ`) visar "Landet hittades inte".
+- **Väder.** Aktuell temperatur, vind, upplevd temperatur och luftfuktighet i huvudstaden.
+- **Wikipedia.** Introtext med bild, källhänvisning och länk till hela artikeln.
+- **Tillbaka-länk.** Tar dig tillbaka till listan med samma sökning, region och sida som innan.
+- **3D-glob.** `/globe` visar en snurrbar glob med varje lands flagga och temperatur. Klickar man på en flagga öppnas landet i en popup ovanpå globen.
 
-## Getting started
+## Kom igång
 
-### 1. Install
+### 1. Installera
 
 ```bash
 npm install
 ```
 
-### 2. Add an API key
+### 2. Lägg in API-nyckel
 
-Country data comes from [REST Countries](https://restcountries.com), which requires a free API key. Sign up at https://restcountries.com/sign-up, then copy `.env.example` to `.env.local` and add your key:
+Landdata kommer från [REST Countries v5](https://restcountries.com), som kräver en gratis API-nyckel. Skapa ett konto på https://restcountries.com/sign-up, kopiera `.env.example` till `.env.local` och lägg in nyckeln:
 
 ```
-RESTCOUNTRIES_API_KEY=your_key_here
+RESTCOUNTRIES_API_KEY=din_nyckel_här
 ```
 
-Without a key, every request returns **401 Unauthorized** and no countries will load. Restart the dev server after you change `.env.local`.
+Starta om dev-servern efter att du ändrat `.env.local`. Open-Meteo och Wikipedia kräver ingen nyckel.
 
-The weather API ([Open-Meteo](https://open-meteo.com)) needs no key.
-
-### 3. Run
+### 3. Kör
 
 ```bash
 npm run dev
 ```
 
-Open http://localhost:3000.
+Öppna http://localhost:3000.
 
-| Script          | What it does                     |
-| --------------- | -------------------------------- |
-| `npm run dev`   | Start the dev server             |
-| `npm run build` | Build for production             |
-| `npm start`     | Run the production build         |
-| `npm run lint`  | Run ESLint                       |
+| Skript          | Vad det gör                  |
+| --------------- | ---------------------------- |
+| `npm run dev`   | Startar dev-servern          |
+| `npm run build` | Bygger för produktion        |
+| `npm start`     | Kör produktionsbygget        |
+| `npm run lint`  | Kör ESLint                   |
 
-## How it works
+## Ramverk: varför Next.js?
 
-### Data sources
+Jag valde **Next.js 16 (App Router)** med React 19, TypeScript och Tailwind CSS 4.
 
-| API | Used for | Caching |
-| --- | --- | --- |
-| REST Countries v5 | All countries (list and globe) and single-country details | Cached for days, because country data rarely changes |
-| Open-Meteo | Current weather for a country page | Cached for minutes, because Open-Meteo updates every 15 min |
-| Open-Meteo (batched) | Temperatures for every flag on the globe | Cached for hours, to stay inside the free tier's 10,000 calls/day |
+- **API-nyckeln stannar på servern.** All data hämtas i Server Components, så nyckeln till REST Countries skickas aldrig till webbläsaren. Med Vite hade nyckeln (`VITE_…`) gått att läsa i webbläsaren.
+- **Inbyggd cache.** Next.js `"use cache"` och `cacheLife(...)` gör att samma data inte hämtas om i onödan, utan att jag behöver ett extra bibliotek.
+- **Routing i filsystemet.** `/country/[code]`, en egen 404-sida (`not-found.tsx`) och felsida (`error.tsx`) följer med App Router. Parallel routes och intercepting routes gör det möjligt att visa ett land som popup på globen.
 
-All fetching happens in **Server Components**, so the API key never reaches the browser. Caching uses Next.js's `"use cache"` directive with `cacheLife(...)` (enabled through `cacheComponents: true` in [next.config.ts](next.config.ts)).
+## Fördjupningar
 
-The REST Countries API returns at most 100 countries per request. [get-all.tsx](src/app/components/get-all.tsx) keeps requesting with a growing `offset` until `meta.more` is false. It also asks only for the fields the list needs, through `response_fields`.
+### Obligatoriskt VG-krav: REST Countries v5
 
-The globe needs weather for about 250 places. [globe-weather.ts](src/app/globe/components/globe-weather.ts) sends them to Open-Meteo in chunks of 100 coordinates per request. If a chunk fails, those flags just show no temperature, and the rest of the globe still works.
+Appen använder REST Countries v5 med egen nyckel (se ovan). API:et ger högst 100 länder per anrop. [get-all.tsx](src/app/components/get-all.tsx) hämtar därför första sidan, läser hur många länder det finns totalt och hämtar resten parallellt med olika `offset`. Med `response_fields` hämtas bara de fält listan behöver.
+
+Vädret använder huvudstadens koordinater från REST Countries. Om landet saknar huvudstad används landets mittpunkt ([weather-location.ts](src/app/lib/weather-location.ts)).
+
+### Cache
+
+Data hämtas inte om i onödan. Olika data har olika cache-tid beroende på hur ofta den ändras:
+
+| API | Används till | Cache-tid | Varför |
+| --- | --- | --- | --- |
+| REST Countries v5 | Alla länder och enskilda länder | Dagar | Landdata ändras nästan aldrig |
+| Wikipedia | Introtext och bild | Dagar | Artiklarnas sammanfattning ändras sällan |
+| Open-Meteo | Aktuellt väder på detaljsidan | Minuter | Open-Meteo uppdaterar aktuellt väder var 15:e minut |
+| Open-Meteo (batch) | Temperatur för alla flaggor på globen | Timmar | Ca 250 platser, så kortare cache skulle snabbt äta upp gratiskvoten |
+
+Cachen ligger på servern (`cacheComponents: true` i [next.config.ts](next.config.ts)). Därför syns anropen till API:erna inte i webbläsarens Network-flik. Där syns bara Next.js egna förfrågningar mellan webbläsare och server.
+
+## Hur appen fungerar
 
 ### Routing
 
 ```
 src/app/
-├── page.tsx                      /               Country list (search, region, pagination)
-├── country/[code]/page.tsx       /country/SWE    Full country page
+├── page.tsx                      /               Landlista (sök, region, paginering)
+├── country/[code]/page.tsx       /country/SWE    Detaljsida
 ├── globe/
-│   ├── page.tsx                  /globe          3D globe
-│   ├── layout.tsx                Renders the page plus the @modal slot
-│   └── @modal/(..)country/[code] Intercepts /country/[code] and shows it as a popup
-└── not-found.tsx                 404 page
+│   ├── page.tsx                  /globe          3D-glob
+│   ├── layout.tsx                Visar sidan plus @modal-slotten
+│   └── @modal/(..)country/[code] Fångar /country/[code] och visar landet som popup
+├── error.tsx                     Felsida
+└── not-found.tsx                 404-sida
 ```
 
-The globe popup uses Next.js **parallel routes** (`@modal`) together with **intercepting routes** (`(..)country`). When you click a flag on the globe, the URL changes to `/country/XXX`, but Next.js renders the country inside a modal instead of leaving the globe. Both the popup and the full page use the same [CountryDetail](src/app/components/country-detail.tsx) component.
+Länder identifieras med sin trebokstavskod (`alpha_3`). Några omstridda områden saknar kod och använder därför namnet i stället ([country-href.ts](src/app/lib/country-href.ts)).
 
-Countries are identified by their three-letter code (`alpha_3`). A few disputed territories have no code, so they use their name instead (see [country-href.ts](src/app/lib/country-href.ts)).
+### Laddning och fel
 
-### Weather location
+Sidor som beror på URL:en eller långsamma anrop ligger i `<Suspense>`, så layouten visas direkt med en spinner eller laddningstext. Väder och Wikipedia ligger i egna `<Suspense>`-block och hämtas oberoende av landdatan. Om något av dem svarar med ett fel visas resten av detaljsidan ändå.
 
-[weather-location.ts](src/app/lib/weather-location.ts) chooses where to get weather for. It uses the country's primary capital if it has one, and otherwise the country's geographic centre. The country page and the globe share this logic, so they always show the same temperature.
-
-### Loading states
-
-Pages that depend on the URL or on slow requests are wrapped in `<Suspense>`, so the layout shows immediately with a "Loading…" fallback. The globe uses WebGL, which only exists in the browser, so it is loaded with `next/dynamic` and `ssr: false`.
-
-## Project structure
+### Projektstruktur
 
 ```
 src/app/
 ├── components/
-│   ├── get-all.tsx          Fetches all countries (paginated API calls)
-│   ├── country-detail.tsx   Fetches and shows one country
-│   ├── country-list.tsx     Grid of country cards
-│   ├── weather.tsx          Current weather box
-│   ├── search.tsx           Search form (keeps the selected region)
-│   ├── region-sorting.tsx   Region filter buttons
-│   ├── pagination.tsx       Previous/next links
-│   └── nav.tsx              Top navigation
+│   ├── get-all.tsx          Hämtar alla länder (flera anrop med offset)
+│   ├── country-detail.tsx   Hämtar och visar ett land
+│   ├── country-list.tsx     Grid med landkort
+│   ├── weather.tsx          Aktuellt väder
+│   ├── wiki-intro.tsx       Introtext och bilder från Wikipedia
+│   ├── search.tsx           Sökformulär (behåller vald region)
+│   ├── region-sorting.tsx   Regionknappar
+│   ├── pagination.tsx       Föregående/nästa
+│   └── nav.tsx              Navbar
 ├── lib/
-│   ├── country-href.ts      Builds /country/... links
-│   ├── home-href.ts         Builds / links with q, region and page
-│   └── weather-location.ts  Picks the coordinates for weather
-├── globe/components/        Globe (react-globe.gl), popup modal, batched weather
-└── types/country.type.ts    TypeScript types for the REST Countries API
+│   ├── country-href.ts      Bygger länkar till /country/...
+│   ├── home-href.ts         Bygger länkar till / med q, region och page
+│   └── weather-location.ts  Väljer koordinater för vädret
+├── globe/components/        Globen (react-globe.gl), popup och väder i batch
+└── types/country.type.ts    TypeScript-typer för REST Countries-svaret
 ```
 
 ## Deployment
 
-The project is deployed on Vercel. Add `RESTCOUNTRIES_API_KEY` under **Project → Settings → Environment Variables**, then redeploy.
+Appen är deployad på Vercel: https://js3-slutprojekt-public.vercel.app
+
+`RESTCOUNTRIES_API_KEY` ligger som miljövariabel under **Project → Settings → Environment Variables** i Vercel.
+
+## AI-redovisning
+
+<!-- TODO: Fyll i vilka AI-verktyg du har använt och till vad. -->
+
+- **Claude (Claude Code):** gick igenom projektet mot uppgiftens krav och skrev ett utkast till denna README.
+- *Fyll i övriga verktyg och vad du använde dem till, t.ex. felsökning, förklaringar eller kodförslag.*
+
+Jag kan förklara all kod i projektet, även den jag fått hjälp med.
+
+## Reflektion
+
+<!-- TODO: Skriv 3–5 meningar med dina egna ord. -->
+
+*Vad gick bra? Vad var svårast? Vad skulle du göra annorlunda nästa gång?*

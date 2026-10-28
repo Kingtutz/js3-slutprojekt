@@ -22,17 +22,17 @@ function Pagination({
                 <Link
                     href={pageHref(currentPage - 1)}
                     className="px-3 sm:px-4 py-3 bg-transparent text-[#d6b56e] border border-[#3a2f24] rounded-xs hover:border-[#d6b56e]">
-                    Previous
+                    Föregående
                 </Link>
             )}
             <span className="px-3 sm:px-4 py-3 bg-transparent text-[#d6b56e] border border-[#3a2f24] rounded-xs ">
-                Page {currentPage} of {totalPages}
+                Sida {currentPage} av {totalPages}
             </span>
             {currentPage < totalPages && (
                 <Link
                     href={pageHref(currentPage + 1)}
                     className="px-3 sm:px-4 py-3 bg-transparent text-[#d6b56e] border border-[#3a2f24] rounded-xs hover:border-[#d6b56e]">
-                    Next
+                    Nästa
                 </Link>
             )}
         </nav>

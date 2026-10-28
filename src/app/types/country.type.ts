@@ -128,6 +128,7 @@ export type Country = {
     government_type: string;
     landlocked: boolean;
     languages: Language[];
+    population: number;
 };
 
 export type CountrySummary = {

@@ -122,20 +122,20 @@ async function WikiIntro({ commonName, officialName }: WikiIntroProps) {
                         src={summary.thumbnail.source}
                         width={summary.thumbnail.width}
                         height={summary.thumbnail.height}
-                        alt={`Image from the Wikipedia article about ${summary.title}${summary.description ? ` – ${summary.description}` : ""}`}
+                        alt={`Bild från Wikipedia-artikeln om ${summary.title}${summary.description ? ` – ${summary.description}` : ""}`}
                         className="w-full max-w-40 h-auto border border-[#d6b56e] sm:shrink-0"
                     />
                 )}
                 <div className="flex flex-col gap-2">
                     <p>{summary.extract}</p>
                     <p className="text-sm text-[#8a7a66]">
-                        Source:{" "}
+                        Källa:{" "}
                         <a
                             href={articleUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="underline hover:text-[#d6b56e]">
-                            “{summary.title}” on Wikipedia
+                            “{summary.title}” på Wikipedia
                         </a>{" "}
                         (CC BY-SA 4.0)
                     </p>
@@ -144,13 +144,13 @@ async function WikiIntro({ commonName, officialName }: WikiIntroProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="underline">
-                        Read the full article on Wikipedia →
+                        Läs hela artikeln på Wikipedia →
                     </a>
                 </div>
             </section>
             {images.length > 0 && (
                 <section className="flex flex-col gap-2 border border-[#3a2f24] rounded-xs p-4">
-                    <h2 className="font-semibold">Pictures</h2>
+                    <h2 className="font-semibold">Bilder</h2>
                     <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
                         {images.map((image) => (
                             <li key={image.title}>
