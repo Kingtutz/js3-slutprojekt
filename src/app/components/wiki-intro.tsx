@@ -59,33 +59,30 @@ async function fetchImages(title: string): Promise<WikiImage[]> {
         `https://en.wikipedia.org/api/rest_v1/page/media-list/${encodeURIComponent(title.replaceAll(" ", "_"))}`,
         { headers: { "Api-User-Agent": "js3-slutprojekt (school project)" } },
     );
-    // The pictures are extra info, so a failed request just means no gallery
+
     if (!res.ok) return [];
 
     const { items }: { items: WikiMediaItem[] } = await res.json();
-    return (
-        items
-            // SVGs are mostly flags, maps and coats of arms, photos are jpg/png.
-            // Images without a caption tend to be portraits or icons.
-            .filter(
-                (i) =>
-                    i.type === "image" &&
-                    i.showInGallery &&
-                    i.srcset?.length &&
-                    i.caption?.text &&
-                    !i.title.toLowerCase().endsWith(".svg"),
-            )
-            .slice(0, GALLERY_SIZE)
-            .map((i) => ({
-                title: i.title,
-                caption: i.caption!.text,
-                // The API returns protocol-relative URLs ("//thumb.wikimedia.org/...")
-                src: `https:${i.srcset![0].src}`,
-                srcSet: i
-                    .srcset!.map((s) => `https:${s.src} ${s.scale}`)
-                    .join(", "),
-            }))
-    );
+    return items
+
+        .filter(
+            (i) =>
+                i.type === "image" &&
+                i.showInGallery &&
+                i.srcset?.length &&
+                i.caption?.text &&
+                !i.title.toLowerCase().endsWith(".svg"),
+        )
+        .slice(0, GALLERY_SIZE)
+        .map((i) => ({
+            title: i.title,
+            caption: i.caption!.text,
+            // The API returns protocol-relative URLs ("//thumb.wikimedia.org/...")
+            src: `https:${i.srcset![0].src}`,
+            srcSet: i
+                .srcset!.map((s) => `https:${s.src} ${s.scale}`)
+                .join(", "),
+        }));
 }
 
 async function findSummary(names: string[]) {
@@ -107,8 +104,6 @@ async function WikiIntro({ commonName, officialName }: WikiIntroProps) {
         `${commonName} (country)`,
         officialName,
     ]);
-
-    // The intro is extra info, so a missing article shouldn't break the country page
     if (!summary) return null;
 
     const articleUrl = summary.content_urls.desktop.page;

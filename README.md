@@ -8,7 +8,7 @@ En reseapp byggd som slutprojekt i JavaScript 3 (HT26). Appen visar alla världe
 
 - **Landlista.** Startsidan visar länderna som kort med flagga, namn, region och huvudstad, 24 per sida.
 - **Sök.** Sökfältet i navbaren filtrerar länderna på namn.
-- **Regionfilter.** Knappar för varje region plus *All*. Ny sökning eller ny region börjar om på sida 1.
+- **Regionfilter.** Knappar för varje region plus _All_. Ny sökning eller ny region börjar om på sida 1.
 - **URL-state.** Sida, sökord och region ligger i URL:en (`/?q=fin&region=Europe&page=2`), så en vy kan laddas om, delas och bläddras med bakåtknappen.
 - **Detaljsida.** `/country/SWE` visar landets namn, namn på landets egna språk, huvudstad, yta, språk och valuta. En ogiltig kod (t.ex. `/country/XYZ`) visar "Landet hittades inte".
 - **Väder.** Aktuell temperatur, vind, upplevd temperatur och luftfuktighet i huvudstaden.
@@ -42,12 +42,12 @@ npm run dev
 
 Öppna http://localhost:3000.
 
-| Skript          | Vad det gör                  |
-| --------------- | ---------------------------- |
-| `npm run dev`   | Startar dev-servern          |
-| `npm run build` | Bygger för produktion        |
-| `npm start`     | Kör produktionsbygget        |
-| `npm run lint`  | Kör ESLint                   |
+| Skript          | Vad det gör           |
+| --------------- | --------------------- |
+| `npm run dev`   | Startar dev-servern   |
+| `npm run build` | Bygger för produktion |
+| `npm start`     | Kör produktionsbygget |
+| `npm run lint`  | Kör ESLint            |
 
 ## Ramverk: varför Next.js?
 
@@ -69,12 +69,12 @@ Vädret använder huvudstadens koordinater från REST Countries. Om landet sakna
 
 Data hämtas inte om i onödan. Olika data har olika cache-tid beroende på hur ofta den ändras:
 
-| API | Används till | Cache-tid | Varför |
-| --- | --- | --- | --- |
-| REST Countries v5 | Alla länder och enskilda länder | Dagar | Landdata ändras nästan aldrig |
-| Wikipedia | Introtext och bild | Dagar | Artiklarnas sammanfattning ändras sällan |
-| Open-Meteo | Aktuellt väder på detaljsidan | Minuter | Open-Meteo uppdaterar aktuellt väder var 15:e minut |
-| Open-Meteo (batch) | Temperatur för alla flaggor på globen | Timmar | Ca 250 platser, så kortare cache skulle snabbt äta upp gratiskvoten |
+| API                | Används till                          | Cache-tid | Varför                                                              |
+| ------------------ | ------------------------------------- | --------- | ------------------------------------------------------------------- |
+| REST Countries v5  | Alla länder och enskilda länder       | Dagar     | Landdata ändras nästan aldrig                                       |
+| Wikipedia          | Introtext och bild                    | Dagar     | Artiklarnas sammanfattning ändras sällan                            |
+| Open-Meteo         | Aktuellt väder på detaljsidan         | Minuter   | Open-Meteo uppdaterar aktuellt väder var 15:e minut                 |
+| Open-Meteo (batch) | Temperatur för alla flaggor på globen | Timmar    | Ca 250 platser, så kortare cache skulle snabbt äta upp gratiskvoten |
 
 Cachen ligger på servern (`cacheComponents: true` i [next.config.ts](next.config.ts)). Därför syns anropen till API:erna inte i webbläsarens Network-flik. Där syns bara Next.js egna förfrågningar mellan webbläsare och server.
 
@@ -124,21 +124,18 @@ src/app/
 
 ## Deployment
 
-Appen är deployad på Vercel: https://js3-slutprojekt-public.vercel.app
+Appen är deployad på Vercel: https://js3-slutprojekt.vercel.app
 
 `RESTCOUNTRIES_API_KEY` ligger som miljövariabel under **Project → Settings → Environment Variables** i Vercel.
 
 ## AI-redovisning
 
-<!-- TODO: Fyll i vilka AI-verktyg du har använt och till vad. -->
-
 - **Claude (Claude Code):** gick igenom projektet mot uppgiftens krav och skrev ett utkast till denna README.
-- *Fyll i övriga verktyg och vad du använde dem till, t.ex. felsökning, förklaringar eller kodförslag.*
-
-Jag kan förklara all kod i projektet, även den jag fått hjälp med.
+- **Claude (Claude Code):** Har även hjälpt mig med att lösa problem jag har stött på som jag inte vetat hur jag skulle lösa.
+- **Copilot:** Har Felsökningar, förklaringar och kodförslag.
 
 ## Reflektion
 
-<!-- TODO: Skriv 3–5 meningar med dina egna ord. -->
-
-*Vad gick bra? Vad var svårast? Vad skulle du göra annorlunda nästa gång?*
+Jag valde att jobba i next.js för att få lite fördjupning i det.
+Det klurigaste med upgiften var hur jag skulle hämta all länderna när jag bara fick hämta 100 av ca250 länder samtidigt.
+Om jag skulle gjort detta igen så hade jag nog försökt lägga lite mer tid på det än jag har gjort denna gången.

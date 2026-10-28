@@ -75,7 +75,6 @@ async function CountryDetail({ params, showWikiIntro }: CountryDetailProps) {
     const capital = primaryCapital?.name;
     const weatherAt = weatherLocation(capitals, coordinates);
 
-    // Om man vill ha flagan i detalj sidan komentera in denna snipppeten igen. Valde att ta bort den då Bilden från wikin är oftast flagan.
     return (
         <div className="flex flex-col gap-2 text-[#d6b56e]">
             {flagUrl && (

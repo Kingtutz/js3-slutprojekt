@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import CountryList from "./components/country-list";
-import Search from "./components/search";
 import fetchAllCountries from "./components/get-all";
 import Pagination from "./components/pagination";
 import RegionSorting from "./components/region-sorting";
@@ -11,7 +10,9 @@ const PAGE_SIZE = 24;
 function Home({ searchParams }: PageProps<"/">) {
     return (
         <Suspense
-            fallback={<p className="p-4 text-[#d6b56e]">Laddar länder...</p>}>
+            fallback={
+                <p className="p-4 text-[#d6b56e]">Loading countries...</p>
+            }>
             <Countries searchParams={searchParams} />
         </Suspense>
     );
